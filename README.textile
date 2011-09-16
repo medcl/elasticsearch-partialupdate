@@ -27,6 +27,7 @@ mvn package
 elasticsearch/plguin/es-partial-update/
 
 *** if your version >=0.17,you can install the plugin like this:
+
 <pre>
 bin/plugin  -install medcl/ElasticSearch.PartialUpdate
 </pre>
