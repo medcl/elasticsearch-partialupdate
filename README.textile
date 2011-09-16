@@ -1,6 +1,3 @@
-requirements:
-tested under 0.16.2
-
 h3.how to build this plugin?
 a.maven combile
 <pre>
@@ -19,16 +16,24 @@ a.first,let's do a index
 <pre>
 curl -XDELETE http://localhost:9200/index/type1/1/
 curl -XPOST http://localhost:9200/index/type1/1/ -d'{"name":"medcl","blog":"http://log.medcl.net"}'
+
+{"ok":true,"_index":"index","_type":"type1","_id":"1","_version":1}
 </pre>
 b.now let's get it,check it
 <pre>
 curl -XGET http://localhost:9200/index/type1/1/
+
+{"_index":"index","_type":"type1","_id":"1","_version":1, "_source" : {"name":"medcl","blog":"http://log.medcl.net"}}
 </pre>
 c.now let's update it
 <pre>
 curl -XPOST http://localhost:9200/index/type1/1/_update -d'{"name":"medcl?","time":"2011-1-1"}'
+
+{"ok":true,"_index":"index","_type":"type1","_id":"1","_version":2}
 </pre>
 d.let's get the document again,check...
 <pre>
 curl -XGET http://localhost:9200/index/type1/1/
+
+{"_index":"index","_type":"type1","_id":"1","_version":2, "_source" : {"time":"2011-1-1","name":"medcl?","blog":"http://log.medcl.net"}}
 </pre>
