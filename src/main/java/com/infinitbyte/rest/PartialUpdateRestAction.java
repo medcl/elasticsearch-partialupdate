@@ -1,5 +1,6 @@
 package com.infinitbyte.rest;
 
+import org.elasticsearch.ElasticSearchParseException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.WriteConsistencyLevel;
 import org.elasticsearch.action.get.GetField;
@@ -10,15 +11,20 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.action.RequestBuilder;
+import org.elasticsearch.common.compress.lzf.LZF;
+import org.elasticsearch.common.compress.lzf.LZFChunk;
 import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.io.stream.BytesStreamInput;
+import org.elasticsearch.common.io.stream.CachedStreamInput;
+import org.elasticsearch.common.io.stream.LZFStreamInput;
 import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentBuilderString;
+import org.elasticsearch.common.xcontent.*;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.rest.*;
 import org.elasticsearch.rest.action.support.RestActions;
 import org.elasticsearch.rest.action.support.RestXContentBuilder;
+import org.elasticsearch.search.lookup.SourceLookup;
 
 import java.io.IOException;
 import java.util.Date;
@@ -29,7 +35,7 @@ import static org.elasticsearch.rest.RestStatus.CREATED;
 import static org.elasticsearch.rest.RestStatus.NOT_FOUND;
 import static org.elasticsearch.rest.RestStatus.OK;
 import static org.elasticsearch.rest.action.support.RestXContentBuilder.restContentBuilder;
-
+import org.elasticsearch.search.lookup.SourceLookup;
 /**
  * Created by IntelliJ IDEA.
  * User: Medcl'
@@ -42,19 +48,36 @@ public class PartialUpdateRestAction extends BaseRestHandler {
     public PartialUpdateRestAction(Settings settings, Client client, RestController restController) {
         super(settings, client);
 
-        restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_reindex",this);
-        restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_reindex",this);
         restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_update",this);
         restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_update",this);
     }
 
     public void handleRequest(final RestRequest request, final RestChannel channel) {
         if(logger.isDebugEnabled()){
-            logger.debug("partial reindex entering...");
+            logger.debug("partial update entering...");
         }
 
         if(logger.isDebugEnabled()){
             logger.debug("doc pending to be update:{}/{}/{}",request.param("index"), request.param("type"), request.param("id"));
+        }
+
+        final Map<String,Object> pendingChanges=sourceAsMap(request.contentByteArray(),request.contentByteArrayOffset(),request.contentLength());
+
+        //if pending changes is empty,just return
+        if(pendingChanges.size()<=0){
+            XContentBuilder builder = null;
+            try {
+                builder = RestXContentBuilder.restContentBuilder(request);
+                builder.startObject().field("reason","pending changes is empty").endObject();
+                            channel.sendResponse(new XContentRestResponse(request,RestStatus.BAD_REQUEST, builder));
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(logger.isDebugEnabled()){
+            logger.debug("pendingChanges({}):{}",pendingChanges.size(),pendingChanges.toString());
         }
 
         final GetRequest getRequest = new GetRequest(request.param("index"), request.param("type"), request.param("id"));
@@ -91,15 +114,24 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                             }
 
                             //prepare document
-                            for (Iterator<String> iterator = source.keySet().iterator(); iterator.hasNext(); ) {
+                            for (Iterator<String> iterator = pendingChanges.keySet().iterator(); iterator.hasNext(); ) {
                                 String next =  iterator.next();
-
+                                source.put(next,pendingChanges.get(next));
                                 if(logger.isDebugEnabled()){
                                 logger.debug("key:{},value:{}",next,source.get(next));
                                 }
                             }
 
                             //source.put("_modified", new DateTime());
+
+                            //for debugging
+                            if(logger.isDebugEnabled()){
+                                for (Iterator<String> iterator = source.keySet().iterator(); iterator.hasNext(); ) {
+                                    String next =  iterator.next();
+
+                                    logger.debug("key:{},value:{}",next,source.get(next));
+                                }
+                            }
 
                             //indexing
                             IndexRequest indexRequest = new IndexRequest(request.param("index"), request.param("type"), request.param("id"));
@@ -159,6 +191,9 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                                     } catch (Exception e) {
                                         onFailure(e);
                                     }
+                                  if(logger.isDebugEnabled()){
+                                        logger.debug("exit index response");
+                                    }
                                 }
 
                                  public void onFailure(Throwable e) {
@@ -168,13 +203,14 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                                         logger.error("Failed to send failure response", e1);
                                     }
                                 }
+
                             });
 
 
                         }else {
                             builder = RestXContentBuilder.restContentBuilder(request);
                                         builder.startObject().field("reason","source is empty").endObject();
-                             channel.sendResponse(new XContentRestResponse(request,RestStatus.BAD_REQUEST, builder));
+                            channel.sendResponse(new XContentRestResponse(request,RestStatus.BAD_REQUEST, builder));
                         }
 
                     }
@@ -193,8 +229,36 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                      }
             }
         });
-
+      if(logger.isDebugEnabled()){
+            logger.debug("exit partial update");
+        }
     }
+
+    public static Map<String, Object> sourceAsMap(byte[] bytes, int offset, int length) {
+          XContentParser parser = null;
+          try {
+              if (isCompressed(bytes, offset, length)) {
+                  BytesStreamInput siBytes = new BytesStreamInput(bytes, offset, length);
+                  LZFStreamInput siLzf = CachedStreamInput.cachedLzf(siBytes);
+                  XContentType contentType = XContentFactory.xContentType(siLzf);
+                  siLzf.resetToBufferStart();
+                  parser = XContentFactory.xContent(contentType).createParser(siLzf);
+                  return parser.map();
+              } else {
+                  parser = XContentFactory.xContent(bytes, offset, length).createParser(bytes, offset, length);
+                  return parser.map();
+              }
+          } catch (Exception e) {
+              throw new ElasticSearchParseException("Failed to parse source to map", e);
+          } finally {
+              if (parser != null) {
+                  parser.close();
+              }
+          }
+      }
+   public static boolean isCompressed(final byte[] buffer, int offset, int length) {
+    return length >= 2 && buffer[offset] == LZFChunk.BYTE_Z && buffer[offset + 1] == LZFChunk.BYTE_V;
+   }
 
         static final class Fields {
         static final XContentBuilderString OK = new XContentBuilderString("ok");
