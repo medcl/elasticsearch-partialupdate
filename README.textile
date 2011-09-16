@@ -1,37 +1,60 @@
-h3.how to build this plugin?
-a.maven combile
+h1. ElasticSearch PartialUpdate Plugin
+
+h2. Update your index on-demand.
+
+h3. how to build this plugin?
+
+** specify elasticsearch version
+
+by edit pom.xml,you can specify the elasticsearch version you are using.
+
+<pre>
+...
+<elasticsearch.version>0.16.2</elasticsearch.version>
+...
+</pre>
+
+** maven build
+
 <pre>
 mvn clean
 mvn package
 </pre>
 
-b.drop the jar file to your elasticsearch plugin folder:
+** drop the jar file to your elasticsearch plugin folder:
 
 like: elasticsearch/plguin/es-partial-update/
 
 
-h3.how to play with this plguin?
+h3. how to play with this plguin?
 
-a.first,let's do a index
+** first,let's index a doucument
+
 <pre>
 curl -XDELETE http://localhost:9200/index/type1/1/
 curl -XPOST http://localhost:9200/index/type1/1/ -d'{"name":"medcl","blog":"http://log.medcl.net"}'
 
 {"ok":true,"_index":"index","_type":"type1","_id":"1","_version":1}
 </pre>
-b.now let's get it,check it
+
+** now let's get it
+
 <pre>
 curl -XGET http://localhost:9200/index/type1/1/
 
 {"_index":"index","_type":"type1","_id":"1","_version":1, "_source" : {"name":"medcl","blog":"http://log.medcl.net"}}
 </pre>
-c.now let's update it
+
+** ok,let's update it,update a filed(name),and add a new time filed(time)
+
 <pre>
 curl -XPOST http://localhost:9200/index/type1/1/_update -d'{"name":"medcl?","time":"2011-1-1"}'
 
 {"ok":true,"_index":"index","_type":"type1","_id":"1","_version":2}
 </pre>
-d.let's get the document again,check...
+
+** let's get the document again,check...,things changed.
+
 <pre>
 curl -XGET http://localhost:9200/index/type1/1/
 
