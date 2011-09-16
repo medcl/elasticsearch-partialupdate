@@ -9,7 +9,7 @@
     <version>1.0</version>
 
          <properties>
-        <elasticsearch.version>0.16.2</elasticsearch.version>
+        <elasticsearch.version>0.17.5</elasticsearch.version>
     </properties>
 
     <repositories>
