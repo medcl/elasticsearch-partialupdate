@@ -32,7 +32,7 @@ elasticsearch/plguin/es-partial-update/
 bin/plugin  -install medcl/ElasticSearch.PartialUpdate
 </pre>
 
-h3. how to play with this plguin?
+h3. how to play with this plugin?
 
 ** first,let's index a doucument
 
