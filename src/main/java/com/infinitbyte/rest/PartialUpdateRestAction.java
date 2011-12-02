@@ -105,7 +105,12 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                     if (!getResponse.exists()) {
                         channel.sendResponse(new XContentRestResponse(request, NOT_FOUND, builder));
                     } else {
-                        logger.info(getResponse.sourceAsString());
+                    
+                     if(logger.isDebugEnabled())
+                      {                          
+                          logger.debug(getResponse.sourceAsString());
+                      }                    
+                        
                         if(!getResponse.isSourceEmpty()){
                             Map<String,Object> source=getResponse.getSource();
                             if(logger.isDebugEnabled())
