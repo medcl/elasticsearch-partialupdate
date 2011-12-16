@@ -1,9 +1,9 @@
 package org.elasticsearch.plugin.infinitbyte;
 
-import com.infinitbyte.rest.PartialUpdateRestAction;
 import org.elasticsearch.common.inject.Module;
 import org.elasticsearch.plugins.AbstractPlugin;
 import org.elasticsearch.rest.RestModule;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +11,7 @@ import org.elasticsearch.rest.RestModule;
  * Date: 9/15/11
  * Time: 3:07 PM
  */
-public class PartialUpdatePlugin extends AbstractPlugin{
+public class PartialUpdatePlugin extends AbstractPlugin {
     public String name() {
         return "DocumentPartialUpdate";
     }

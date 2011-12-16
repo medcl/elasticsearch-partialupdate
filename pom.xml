@@ -4,12 +4,36 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>InfinitByte</groupId>
-    <artifactId>partialupdate</artifactId>
-    <version>1.0</version>
+  <groupId>org.elasticsearch</groupId>
+    <artifactId>elasticsearch-partialupdate</artifactId>
+    <version>1.0.0</version>
 
-         <properties>
-        <elasticsearch.version>0.18.4</elasticsearch.version>
+    <packaging>jar</packaging>
+       <description>PartialUpdate for ElasticSearch</description>
+       <inceptionYear>2009</inceptionYear>
+       <licenses>
+           <license>
+               <name>The Apache Software License, Version 2.0</name>
+               <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+               <distribution>repo</distribution>
+           </license>
+       </licenses>
+       <scm>
+           <connection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</connection>
+           <developerConnection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git
+           </developerConnection>
+           <url>http://github.com/medcl/elasticsearch.partialupdate</url>
+       </scm>
+
+       <parent>
+           <groupId>org.sonatype.oss</groupId>
+           <artifactId>oss-parent</artifactId>
+           <version>7</version>
+       </parent>
+
+
+    <properties>
+        <elasticsearch.version>0.18.5</elasticsearch.version>
     </properties>
 
     <repositories>
@@ -22,12 +46,33 @@
         </repository>
     </repositories>
 
-    <dependencies>
+ <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elasticsearch.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3.RC2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.3.RC2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

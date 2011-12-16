@@ -26,10 +26,10 @@ mvn package
 *** drop the jar file to your elasticsearch plugin folder:
 elasticsearch/plguin/es-partial-update/
 
-*** if your version >=0.17,you can install the plugin like this:
+or
 
 <pre>
-bin/plugin  -install medcl/ElasticSearch.PartialUpdate
+bin/plugin  -install medcl/elasticsearch.partialupdate
 </pre>
 
 h3. how to play with this plugin?
