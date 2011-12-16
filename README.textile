@@ -29,7 +29,7 @@ elasticsearch/plguin/es-partial-update/
 or
 
 <pre>
-bin/plugin  -install medcl/elasticsearch.partialupdate
+bin/plugin  -install medcl/elasticsearch-partialupdate
 </pre>
 
 h3. how to play with this plugin?
