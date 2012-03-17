@@ -24,17 +24,24 @@ mvn package
 ** install the plugin
 
 *** drop the jar file to your elasticsearch plugin folder:
-elasticsearch/plguin/es-partial-update/
+elasticsearch/plugin/es-partial-update/
 
 or
 
 <pre>
-bin/plugin  -install medcl/elasticsearch-partialupdate
+bin/plugin -install medcl/elasticsearch-partialupdate/1.1.0
 </pre>
+
+** versions
+
+|partialupdate Plugin|ElasticSearch|
+| master|0.19 -> master|
+| 1.1.0|0.19 -> master|
+| 1.0.0|0.18|
 
 h3. how to play with this plugin?
 
-** first,let's index a doucument
+** first,let's index a document
 
 <pre>
 curl -XDELETE http://localhost:9200/index/type1/1/
