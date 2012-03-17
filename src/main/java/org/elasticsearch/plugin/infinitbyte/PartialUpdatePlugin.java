@@ -20,7 +20,7 @@ public class PartialUpdatePlugin extends AbstractPlugin {
         return "a document partial update plugin for elasticsearch,allows you to update a document without full reindex.";
     }
 
-    public void onModule(RestModule module){
+    public void onModule(RestModule module) {
         module.addRestAction(PartialUpdateRestAction.class);
     }
 }

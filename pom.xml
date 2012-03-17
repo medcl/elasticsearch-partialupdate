@@ -5,32 +5,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>elastic-partialupdate</name>
-  <groupId>org.elasticsearch</groupId>
+    <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-partialupdate</artifactId>
     <version>1.1.0</version>
 
     <packaging>jar</packaging>
-       <description>PartialUpdate for ElasticSearch</description>
-       <inceptionYear>2009</inceptionYear>
-       <licenses>
-           <license>
-               <name>The Apache Software License, Version 2.0</name>
-               <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-               <distribution>repo</distribution>
-           </license>
-       </licenses>
-       <scm>
-           <connection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</connection>
-           <developerConnection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git
-           </developerConnection>
-           <url>http://github.com/medcl/elasticsearch.partialupdate</url>
-       </scm>
+    <description>PartialUpdate for ElasticSearch</description>
+    <inceptionYear>2009</inceptionYear>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</connection>
+        <developerConnection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</developerConnection>
+        <url>http://github.com/medcl/elasticsearch.partialupdate</url>
+    </scm>
 
-       <parent>
-           <groupId>org.sonatype.oss</groupId>
-           <artifactId>oss-parent</artifactId>
-           <version>7</version>
-       </parent>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
 
     <properties>
@@ -41,13 +40,17 @@
         <repository>
             <id>oss.sonatype.org</id>
             <name>OSS Sonatype</name>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
             <url>http://oss.sonatype.org/content/repositories/releases/</url>
         </repository>
     </repositories>
 
- <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
@@ -77,18 +80,17 @@
         </dependency>
     </dependencies>
 
-   <build>
-       <plugins>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-               <plugin>
-                   <groupId>org.apache.maven.plugins</groupId>
-                   <artifactId>maven-compiler-plugin</artifactId>
-                   <configuration>
-                       <source>1.6</source>
-                       <target>1.6</target>
-                   </configuration>
-               </plugin>
-           </plugins>
-
-   </build>
 </project>
