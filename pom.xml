@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>elastic-partialupdate</name>
   <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-partialupdate</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <packaging>jar</packaging>
        <description>PartialUpdate for ElasticSearch</description>
@@ -33,7 +34,7 @@
 
 
     <properties>
-        <elasticsearch.version>0.18.5</elasticsearch.version>
+        <elasticsearch.version>0.19.0</elasticsearch.version>
     </properties>
 
     <repositories>
@@ -78,37 +79,16 @@
 
    <build>
        <plugins>
-           <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-antrun-plugin</artifactId>
-               <version>1.6</version>
-               <executions>
-                   <execution>
-                        <id>zip</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <zip basedir="${project.build.directory}"
-                                     includes="${project.build.finalName}.jar"
-                                     destfile="${project.build.directory}/elasticsearch-${project.name}-${elasticsearch.version}.zip" />
-                            </target>
-                        </configuration>
-                       <goals>
-                           <goal>run</goal>
-                       </goals>
-                   </execution>
-               </executions>
-           </plugin>
-       </plugins>
 
-       <pluginManagement>
-           <plugins>
                <plugin>
                    <groupId>org.apache.maven.plugins</groupId>
                    <artifactId>maven-compiler-plugin</artifactId>
+                   <configuration>
+                       <source>1.6</source>
+                       <target>1.6</target>
+                   </configuration>
                </plugin>
            </plugins>
-       </pluginManagement>
 
    </build>
 </project>

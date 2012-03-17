@@ -1,6 +1,5 @@
 package org.elasticsearch.plugin.infinitbyte;
 
-import org.elasticsearch.common.inject.Module;
 import org.elasticsearch.plugins.AbstractPlugin;
 import org.elasticsearch.rest.RestModule;
 
@@ -12,6 +11,7 @@ import org.elasticsearch.rest.RestModule;
  * Time: 3:07 PM
  */
 public class PartialUpdatePlugin extends AbstractPlugin {
+
     public String name() {
         return "DocumentPartialUpdate";
     }
@@ -20,10 +20,7 @@ public class PartialUpdatePlugin extends AbstractPlugin {
         return "a document partial update plugin for elasticsearch,allows you to update a document without full reindex.";
     }
 
-    @Override public void processModule(Module module){
-        if(module instanceof RestModule){
-            ((RestModule) module).addRestAction(PartialUpdateRestAction.class);
-        }
+    public void onModule(RestModule module){
+        module.addRestAction(PartialUpdateRestAction.class);
     }
-
 }

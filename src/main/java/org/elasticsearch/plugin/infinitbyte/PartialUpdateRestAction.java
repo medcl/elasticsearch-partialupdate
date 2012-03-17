@@ -10,7 +10,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.action.RequestBuilder;
+import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.common.compress.lzf.LZF;
 import org.elasticsearch.common.compress.lzf.LZFChunk;
 import org.elasticsearch.common.inject.Inject;
@@ -61,7 +61,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
             logger.debug("doc pending to be update:{}/{}/{}",request.param("index"), request.param("type"), request.param("id"));
         }
 
-        final Map<String,Object> pendingChanges=sourceAsMap(request.contentByteArray(),request.contentByteArrayOffset(),request.contentLength());
+        final Map<String,Object> pendingChanges=sourceAsMap(request.contentByteArray(),request.contentByteArrayOffset(),request.contentLength(), request.contentUnsafe());
 
         //if pending changes is empty,just return
         if(pendingChanges.size()<=0){
@@ -239,11 +239,11 @@ public class PartialUpdateRestAction extends BaseRestHandler {
         }
     }
 
-    public static Map<String, Object> sourceAsMap(byte[] bytes, int offset, int length) {
+    public static Map<String, Object> sourceAsMap(byte[] bytes, int offset, int length, boolean unsafe) {
           XContentParser parser = null;
           try {
               if (isCompressed(bytes, offset, length)) {
-                  BytesStreamInput siBytes = new BytesStreamInput(bytes, offset, length);
+                  BytesStreamInput siBytes = new BytesStreamInput(bytes, offset, length, unsafe);
                   LZFStreamInput siLzf = CachedStreamInput.cachedLzf(siBytes);
                   XContentType contentType = XContentFactory.xContentType(siLzf);
                   siLzf.resetToBufferStart();
