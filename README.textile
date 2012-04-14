@@ -1,5 +1,8 @@
 h1. ElasticSearch PartialUpdate Plugin
 
+NOTE elasticsearch 0.19 already implemented a update action,check it out:
+http://www.elasticsearch.org/guide/reference/api/update.html
+
 h2. Update your index on-demand.
 
 h3. how to build this plugin?
