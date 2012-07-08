@@ -4,7 +4,7 @@ NOTE elasticsearch 0.19 already implemented a update action,check it out:
 http://www.elasticsearch.org/guide/reference/api/update.html
 
 
-//version:1.0.0 is for es0.16.2, version 0.1.1 is for es0.19.4
+//version:1.0.0 is for es0.16.2, version 1.1.1 is for es0.19.4
 //changelog:
 //2012-07-08 change all rest interface "_update" to "_partial_update".(breaking change!)
 
@@ -38,7 +38,7 @@ elasticsearch/plugin/es-partial-update/
 or
 
 <pre>
-bin/plugin -install medcl/elasticsearch-partialupdate/1.1.0
+bin/plugin -install medcl/elasticsearch-partialupdate/1.1.1
 </pre>
 
 ** versions
