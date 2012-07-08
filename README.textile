@@ -3,6 +3,11 @@ h1. ElasticSearch PartialUpdate Plugin
 NOTE elasticsearch 0.19 already implemented a update action,check it out:
 http://www.elasticsearch.org/guide/reference/api/update.html
 
+
+//version:1.0.0 is for es0.16.2, version 0.1.1 is for es0.19.4
+//changelog:2012-07-08 change all rest interface "_update" to "_partial_update".
+
+
 h2. Update your index on-demand.
 
 h3. how to build this plugin?
@@ -13,7 +18,7 @@ by edit pom.xml,you can specify the elasticsearch version you are using.
 
 <pre>
 ...
-<elasticsearch.version>0.16.2</elasticsearch.version>
+<elasticsearch.version>0.19.4</elasticsearch.version>
 ...
 </pre>
 
@@ -57,7 +62,7 @@ curl -XGET http://localhost:9200/index/type1/1/
 ** ok,let's update it,update a filed(name),and add a new filed(time)
 
 <pre>
-curl -XPOST http://localhost:9200/index/type1/1/_update -d'{"name":"medcl?","time":"2011-1-1"}'
+curl -XPOST http://localhost:9200/index/type1/1/_partial_update -d'{"name":"medcl?","time":"2011-1-1"}'
 
 {"ok":true,"_index":"index","_type":"type1","_id":"1","_version":2}
 </pre>

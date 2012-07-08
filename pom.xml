@@ -6,7 +6,7 @@
 
   <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-partialupdate</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 
     <packaging>jar</packaging>
        <description>PartialUpdate for ElasticSearch</description>
@@ -33,7 +33,7 @@
 
 
     <properties>
-        <elasticsearch.version>0.18.5</elasticsearch.version>
+        <elasticsearch.version>0.19.4</elasticsearch.version>
     </properties>
 
     <repositories>
@@ -90,7 +90,7 @@
                             <target>
                                 <zip basedir="${project.build.directory}"
                                      includes="${project.build.finalName}.jar"
-                                     destfile="${project.build.directory}/elasticsearch-${project.name}-${elasticsearch.version}.zip" />
+                                     destfile="${project.build.directory}/${project.name}-${version}.zip" />
                             </target>
                         </configuration>
                        <goals>

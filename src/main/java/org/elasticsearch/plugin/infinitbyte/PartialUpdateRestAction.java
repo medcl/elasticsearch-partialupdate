@@ -3,39 +3,30 @@ package org.elasticsearch.plugin.infinitbyte;
 import org.elasticsearch.ElasticSearchParseException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.WriteConsistencyLevel;
-import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.action.RequestBuilder;
-import org.elasticsearch.common.compress.lzf.LZF;
 import org.elasticsearch.common.compress.lzf.LZFChunk;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.io.stream.BytesStreamInput;
 import org.elasticsearch.common.io.stream.CachedStreamInput;
 import org.elasticsearch.common.io.stream.LZFStreamInput;
-import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.*;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.rest.*;
 import org.elasticsearch.rest.action.support.RestActions;
 import org.elasticsearch.rest.action.support.RestXContentBuilder;
-import org.elasticsearch.search.lookup.SourceLookup;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.elasticsearch.rest.RestStatus.CREATED;
-import static org.elasticsearch.rest.RestStatus.NOT_FOUND;
-import static org.elasticsearch.rest.RestStatus.OK;
+import static org.elasticsearch.rest.RestStatus.*;
 import static org.elasticsearch.rest.action.support.RestXContentBuilder.restContentBuilder;
-import org.elasticsearch.search.lookup.SourceLookup;
 /**
  * Created by IntelliJ IDEA.
  * User: Medcl'
@@ -48,8 +39,8 @@ public class PartialUpdateRestAction extends BaseRestHandler {
     public PartialUpdateRestAction(Settings settings, Client client, RestController restController) {
         super(settings, client);
 
-        restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_update",this);
-        restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_update",this);
+        restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_partial_update",this);
+        restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_partial_update",this);
     }
 
     public void handleRequest(final RestRequest request, final RestChannel channel) {
@@ -243,7 +234,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
           XContentParser parser = null;
           try {
               if (isCompressed(bytes, offset, length)) {
-                  BytesStreamInput siBytes = new BytesStreamInput(bytes, offset, length);
+                  BytesStreamInput siBytes = new BytesStreamInput(bytes, offset, length,true);
                   LZFStreamInput siLzf = CachedStreamInput.cachedLzf(siBytes);
                   XContentType contentType = XContentFactory.xContentType(siLzf);
                   siLzf.resetToBufferStart();
