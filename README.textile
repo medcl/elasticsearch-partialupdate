@@ -5,7 +5,8 @@ http://www.elasticsearch.org/guide/reference/api/update.html
 
 
 //version:1.0.0 is for es0.16.2, version 0.1.1 is for es0.19.4
-//changelog:2012-07-08 change all rest interface "_update" to "_partial_update".
+//changelog:
+//2012-07-08 change all rest interface "_update" to "_partial_update".(breaking change!)
 
 
 h2. Update your index on-demand.
@@ -32,17 +33,25 @@ mvn package
 ** install the plugin
 
 *** drop the jar file to your elasticsearch plugin folder:
-elasticsearch/plguin/es-partial-update/
+elasticsearch/plugin/es-partial-update/
 
 or
 
 <pre>
-bin/plugin  -install medcl/elasticsearch-partialupdate
+bin/plugin -install medcl/elasticsearch-partialupdate/1.1.0
 </pre>
+
+** versions
+
+|partialupdate Plugin|ElasticSearch|
+| master|0.19.4 -> master|
+| 1.1.1|0.19.4 -> master|
+| 1.1.0|0.19.0|
+| 1.0.0|0.18.x|
 
 h3. how to play with this plugin?
 
-** first,let's index a doucument
+** first,let's index a document
 
 <pre>
 curl -XDELETE http://localhost:9200/index/type1/1/

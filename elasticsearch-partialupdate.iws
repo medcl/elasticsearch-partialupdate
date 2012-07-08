@@ -15,10 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bb631d3-3717-4e7c-af77-5b26f9337e49" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/assemblies/plugin.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.textile" afterPath="$PROJECT_DIR$/README.textile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/elasticsearch-partialupdate.ipr" afterPath="$PROJECT_DIR$/elasticsearch-partialupdate.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/elasticsearch-partialupdate.iws" afterPath="$PROJECT_DIR$/elasticsearch-partialupdate.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdatePlugin.java" afterPath="$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdatePlugin.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdateRestAction.java" afterPath="$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdateRestAction.java" />
     </list>
     <ignored path="elasticsearch-partialupdate.iws" />
@@ -80,7 +81,7 @@
       <file leaf-file-name="PartialUpdatePlugin.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdatePlugin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="13" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
+            <state line="13" column="13" selection-start="285" selection-end="285" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -89,9 +90,10 @@
       <file leaf-file-name="PartialUpdateRestAction.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdateRestAction.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="236" column="7" selection-start="11842" selection-end="11842" vertical-scroll-proportion="0.0">
+            <state line="251" column="7" selection-start="12554" selection-end="12554" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#sourceAsMap#1;class#PartialUpdateRestAction#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -100,8 +102,12 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="18" selection-start="416" selection-end="416" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="129" column="0" selection-start="4377" selection-end="4377" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="tag#licenses#0;tag#project#0" expanded="false" />
+                <element signature="tag#scm#0;tag#project#0" expanded="false" />
+                <element signature="tag#parent#0;tag#project#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -109,7 +115,7 @@
       <file leaf-file-name="README.textile" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.textile">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="56" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.37853107">
+            <state line="2" column="5" selection-start="45" selection-end="45" vertical-scroll-proportion="0.096045196">
               <folding />
             </state>
           </provider>
@@ -131,6 +137,7 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdateRestAction.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/README.textile" />
       </list>
     </option>
   </component>
@@ -464,30 +471,35 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdateRestAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="236" column="7" selection-start="11842" selection-end="11842" vertical-scroll-proportion="0.0">
+        <state line="251" column="7" selection-start="12554" selection-end="12554" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#sourceAsMap#1;class#PartialUpdateRestAction#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/elasticsearch/plugin/infinitbyte/PartialUpdatePlugin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="13" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
+        <state line="13" column="13" selection-start="285" selection-end="285" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="18" selection-start="416" selection-end="416" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="129" column="0" selection-start="4377" selection-end="4377" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="tag#licenses#0;tag#project#0" expanded="false" />
+            <element signature="tag#scm#0;tag#project#0" expanded="false" />
+            <element signature="tag#parent#0;tag#project#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.textile">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="56" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.37853107">
+        <state line="2" column="5" selection-start="45" selection-end="45" vertical-scroll-proportion="0.096045196">
           <folding />
         </state>
       </provider>

@@ -4,49 +4,57 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.elasticsearch</groupId>
+    <name>elastic-partialupdate</name>
+    <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-partialupdate</artifactId>
+
     <version>1.1.1</version>
 
-    <packaging>jar</packaging>
-       <description>PartialUpdate for ElasticSearch</description>
-       <inceptionYear>2009</inceptionYear>
-       <licenses>
-           <license>
-               <name>The Apache Software License, Version 2.0</name>
-               <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-               <distribution>repo</distribution>
-           </license>
-       </licenses>
-       <scm>
-           <connection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</connection>
-           <developerConnection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git
-           </developerConnection>
-           <url>http://github.com/medcl/elasticsearch.partialupdate</url>
-       </scm>
 
-       <parent>
-           <groupId>org.sonatype.oss</groupId>
-           <artifactId>oss-parent</artifactId>
-           <version>7</version>
-       </parent>
+    <packaging>jar</packaging>
+    <description>PartialUpdate for ElasticSearch</description>
+    <inceptionYear>2009</inceptionYear>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</connection>
+        <developerConnection>scm:git:git@github.com:medcl/elasticsearch.partialupdate.git</developerConnection>
+        <url>http://github.com/medcl/elasticsearch.partialupdate</url>
+    </scm>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
 
     <properties>
+
         <elasticsearch.version>0.19.4</elasticsearch.version>
+
     </properties>
 
     <repositories>
         <repository>
             <id>oss.sonatype.org</id>
             <name>OSS Sonatype</name>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
             <url>http://oss.sonatype.org/content/repositories/releases/</url>
         </repository>
     </repositories>
 
- <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
@@ -75,40 +83,49 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-   <build>
-       <plugins>
-           <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-antrun-plugin</artifactId>
-               <version>1.6</version>
-               <executions>
-                   <execution>
-                        <id>zip</id>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <outputDirectory>${project.build.directory}/releases/</outputDirectory>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assemblies/plugin.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
                         <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <zip basedir="${project.build.directory}"
-                                     includes="${project.build.finalName}.jar"
-                                     destfile="${project.build.directory}/${project.name}-${version}.zip" />
-                            </target>
-                        </configuration>
-                       <goals>
-                           <goal>run</goal>
-                       </goals>
-                   </execution>
-               </executions>
-           </plugin>
-       </plugins>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-       <pluginManagement>
-           <plugins>
-               <plugin>
-                   <groupId>org.apache.maven.plugins</groupId>
-                   <artifactId>maven-compiler-plugin</artifactId>
-               </plugin>
-           </plugins>
-       </pluginManagement>
-
-   </build>
 </project>
