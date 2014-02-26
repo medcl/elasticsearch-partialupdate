@@ -15,4 +15,10 @@
             </excludes>
         </dependencySet>
     </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/lib/</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>
