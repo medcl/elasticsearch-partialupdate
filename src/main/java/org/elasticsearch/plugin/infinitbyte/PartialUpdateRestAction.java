@@ -1,5 +1,8 @@
 package org.elasticsearch.plugin.infinitbyte;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.ElasticSearchParseException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.WriteConsistencyLevel;
@@ -9,6 +12,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.compress.lzf.LZFChunk;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.io.stream.BytesStreamInput;
@@ -37,10 +41,10 @@ public class PartialUpdateRestAction extends BaseRestHandler {
     public PartialUpdateRestAction(Settings settings, Client client,
                                    RestController restController) {
         super(settings, client);
-        restController.registerHandler(RestRequest.Method.POST,
-                "/{index}/{type}/{id}/_partial_update", this);
-        restController.registerHandler(RestRequest.Method.PUT,
-                "/{index}/{type}/{id}/_partial_update", this);
+        restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_partial_update", this);
+        restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_partial_update", this);
+        restController.registerHandler(RestRequest.Method.POST,"/{index}/{type}/{id}/_partial_update/{array_merge}", this);
+        restController.registerHandler(RestRequest.Method.PUT,"/{index}/{type}/{id}/_partial_update/{array_merge}", this);
     }
 
     public void handleRequest(final RestRequest request,
@@ -55,12 +59,15 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                     request.param("id"));
         }
 
-        final Map<String, Object> pendingChanges = sourceAsMap(request
-                .content().array(), request.content().arrayOffset(), request
-                .content().length());
+       final String mergeMethod=request.param("array_merge","replace");
+
+       final String sourceJson=sourceAsString(request.content());
+
+        final JSONObject pendingChangeJsonObject=JSON.parseObject(sourceJson);
+
 
         // if pending changes is empty,just return
-        if (pendingChanges.size() <= 0) {
+        if (pendingChangeJsonObject.size() <= 0) {
             XContentBuilder builder = null;
             try {
 
@@ -73,14 +80,10 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                         RestStatus.BAD_REQUEST, builder));
                 return;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("update",e);
             }
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("pendingChanges({}):{}", pendingChanges.size(),
-                    pendingChanges.toString());
-        }
 
         final GetRequest getRequest = new GetRequest(request.param("index"),
                 request.param("type"), request.param("id"));
@@ -116,38 +119,79 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                         }
 
                         if (!getResponse.isSourceEmpty()) {
-                            Map<String, Object> source = getResponse
-                                    .getSource();
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(
-                                        "there are {} fields in the source,iterating",
-                                        source.size());
-                            }
+                            String source= getResponse.getSourceAsString();
+                            logger.debug("origin:"+source);
+                            logger.debug("pending:"+sourceJson);
+                            JSONObject jsonObject = JSON.parseObject(source);
 
                             // prepare document
-                            for (Iterator<String> iterator = pendingChanges
-                                    .keySet().iterator(); iterator.hasNext();) {
+                            Iterator<String> iterator;
+                            for (iterator=pendingChangeJsonObject.keySet().iterator(); iterator.hasNext();) {
                                 String next = iterator.next();
-                                source.put(next, pendingChanges.get(next));
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("key:{},value:{}", next,
-                                            source.get(next));
+                                logger.debug("update:"+next);
+                                if(jsonObject.containsKey(next)){
+                                    Object jo = jsonObject.get(next);
+                                    if(jo instanceof JSONArray){
+                                        JSONArray jArray = ((JSONArray) jo);
+                                        Object v=pendingChangeJsonObject.get(next);
+
+                                        boolean pendingDataIsArray=false;
+                                        JSONArray pArray=null;
+
+                                        String trim = v.toString().trim();
+                                        if(trim.startsWith("[")&& trim.endsWith("]")){
+                                            try{
+                                                pArray =JSON.parseArray(trim);
+                                                if(pArray.size()>0){
+                                                    pendingDataIsArray=true;
+                                                }
+                                            }catch (Exception e){
+                                               logger.error("update",e);
+                                            }
+
+                                        }
+
+                                        if(mergeMethod.equals("append")){
+                                               if(pendingDataIsArray){
+                                                   for (int i = 0; i < pArray.size(); i++) {
+                                                       if(!jArray.contains(pArray.get(i))){
+                                                           jArray.add(pArray.get(i));
+                                                       }
+                                                   }
+                                               } else{
+                                                   jArray.add(v);
+                                               }
+                                                jsonObject.put(next,jArray);
+                                        }else  if(mergeMethod.equals("remove")){
+                                                if(pendingDataIsArray){
+                                                    for (Object aPArray : pArray) {
+                                                        if (jArray.contains(aPArray)) {
+                                                            jArray.remove(aPArray);
+                                                        }
+                                                    }
+                                                }else{
+                                                if(jArray.contains(v)){
+                                                    jArray.remove(v);
+                                                }
+                                            }
+                                            jsonObject.put(next,jArray);
+                                        }else{
+                                            jsonObject.put(next,pendingChangeJsonObject.get(next));
+                                        }
+                                    }else{
+                                     jsonObject.put(next,pendingChangeJsonObject.get(next));
+                                    }
+                                }else{
+                                  jsonObject.put(next,pendingChangeJsonObject.get(next));
                                 }
                             }
 
-                            // source.put("_modified", new DateTime());
+                            long epoch = System.currentTimeMillis()/1000;
 
-                            // for debugging
-                            if (logger.isDebugEnabled()) {
-                                for (Iterator<String> iterator = source
-                                        .keySet().iterator(); iterator
-                                             .hasNext();) {
-                                    String next = iterator.next();
+                            jsonObject.put("_last_partial_updated", epoch);
 
-                                    logger.debug("key:{},value:{}", next,
-                                            source.get(next));
-                                }
-                            }
+
+                            logger.debug("update json:"+jsonObject.toJSONString());
 
                             // indexing
                             IndexRequest indexRequest = new IndexRequest(
@@ -155,7 +199,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                                     .param("type"), request.param("id"));
                             indexRequest.routing(request.param("routing"));
                             indexRequest.parent(request.param("parent"));
-                            indexRequest.source(source);
+                            indexRequest.source(jsonObject.toJSONString());
                             indexRequest.timeout(request.paramAsTime("timeout",
                                     IndexRequest.DEFAULT_TIMEOUT));
                             indexRequest.refresh(request.paramAsBoolean(
@@ -270,6 +314,18 @@ public class PartialUpdateRestAction extends BaseRestHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("exit partial update");
         }
+    }
+
+    public String sourceAsString(BytesReference source ) {
+
+        if(source!=null){
+            try {
+                return XContentHelper.convertToJson(source, false);
+            } catch (IOException e) {
+                throw new ElasticSearchParseException("failed to convert source to a json string");
+            }
+        }
+        return  null;
     }
 
     public static Map<String, Object> sourceAsMap(byte[] bytes, int offset,

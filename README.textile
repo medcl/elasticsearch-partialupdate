@@ -85,3 +85,43 @@ curl -XGET http://localhost:9200/index/type1/1/
 
 {"_index":"index","_type":"type1","_id":"1","_version":2, "_source" : {"time":"2011-1-1","name":"medcl?","blog":"http://log.medcl.net"}}
 </pre>
+
+
+
+** changes 2014.2.26   array merge support.
+1.add a new tag,data type is array
+<pre>
+curl -XPOST http://localhost:9200/index/type1/1/_partial_update -d'{"tag":["test"]}'
+</pre>
+2.now check it
+<pre>
+curl -XGET http://localhost:9200/index/type1/1/
+
+{"_index":"index","_type":"type1","_id":"1","_version":39,"exists":true, "_source" : {"blog":"http://log.medcl.net","name":"medcl?","tag":["test"],"time":"2011-1-1"}}
+</pre>
+
+3.update the tag field,add new tag `movie`
+<pre>
+curl -XPOST http://localhost:9200/index/type1/1/_partial_update/append -d'{"tag":["movie"]}'
+</pre>
+
+4.now check it again
+<pre>
+curl -XGET http://localhost:9200/index/type1/1/
+
+{"_index":"index","_type":"type1","_id":"1","_version":40,"exists":true, "_source" : {"blog":"http://log.medcl.net","name":"medcl?","tag":["test","movie"],"time":"2011-1-1"}}
+</pre>
+as you can see,movie is in.
+
+5.let's remove `test` from tag
+<pre>
+curl -XPOST http://localhost:9200/index/type1/1/_partial_update/remove -d'{"tag":["test"]}'
+</pre>
+
+6.check it again.
+<pre>
+curl -XGET http://localhost:9200/index/type1/1/
+
+{"_index":"index","_type":"type1","_id":"1","_version":41,"exists":true, "_source" : {"blog":"http://log.medcl.net","name":"medcl?","tag":["movie"],"time":"2011-1-1"}}</pre>
+
+have fun.
