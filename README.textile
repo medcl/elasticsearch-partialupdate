@@ -91,8 +91,8 @@ curl -XGET http://localhost:9200/index/type1/1/
 
 
 
-h3. how to play with array merge
-.
+h3. how to play with array merge?
+
 ** add a new tag,data type is array
 
 <pre>
