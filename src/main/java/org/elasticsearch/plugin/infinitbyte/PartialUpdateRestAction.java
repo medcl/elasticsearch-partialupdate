@@ -3,7 +3,7 @@ package org.elasticsearch.plugin.infinitbyte;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.elasticsearch.ElasticSearchParseException;
+import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.WriteConsistencyLevel;
 import org.elasticsearch.action.get.GetRequest;
@@ -322,7 +322,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
             try {
                 return XContentHelper.convertToJson(source, false);
             } catch (IOException e) {
-                throw new ElasticSearchParseException("failed to convert source to a json string");
+                throw new ElasticsearchParseException("failed to convert source to a json string");
             }
         }
         return  null;
@@ -348,7 +348,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                 return parser.map();
             }
         } catch (Exception e) {
-            throw new ElasticSearchParseException(
+            throw new ElasticsearchParseException(
                     "Failed to parse source to map", e);
         } finally {
             if (parser != null) {
@@ -377,7 +377,7 @@ public class PartialUpdateRestAction extends BaseRestHandler {
                 return parser.map();
             }
         } catch (Exception e) {
-            throw new ElasticSearchParseException(
+            throw new ElasticsearchParseException(
                     "Failed to parse source to map", e);
         } finally {
             if (parser != null) {
